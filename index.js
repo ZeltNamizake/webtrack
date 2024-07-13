@@ -1,21 +1,17 @@
-const express = require("express");
-const requestIp = require("request-ip");
-
+const express = require('express');
 const app = express();
+const port = 3000;
 
-// Middleware untuk mendapatkan alamat IP dari request
-app.use(requestIp.mw());
-
-// Endpoint untuk menampilkan IP pengunjung
-app.get("/", (req, res) => {
-    const clientIp = req.clientIp;
-    if (clientIp) {
-        console.log(`[+] Ip Address: ${clientIp}`);
-    }
-    res.send(`Hanya mengecek.`);
+app.use((req, res, next) => {
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    console.log('Alamat IP:', ip);
+    next();
 });
 
-const port = 3000;
+app.get('/', (req, res) => {
+    res.send(' ');
+});
+
 app.listen(port, () => {
-    console.log(`Web server is a running!`);
+    console.log(`Server berjalan!`);
 });
